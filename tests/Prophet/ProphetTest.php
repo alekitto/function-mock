@@ -5,9 +5,15 @@ namespace Kcs\FunctionMock\Tests\Prophet;
 use Kcs\FunctionMock\Exception\Call\NoCallsException;
 use Kcs\FunctionMock\FunctionProphecy;
 use Kcs\FunctionMock\Prophet\Prophet;
+use Kcs\FunctionMock\Registry\MockRegistry;
 
 class ProphetTest extends \PHPUnit_Framework_TestCase
 {
+    public function tearDown()
+    {
+        MockRegistry::getInstance()->unregisterAll();
+    }
+
     public function testProphesizeShouldReturnProphecyOfClassNamespace()
     {
         $prophet = new Prophet();
