@@ -37,8 +37,6 @@ class Prophet
      */
     public function checkPredictions()
     {
-        MockRegistry::getInstance()->unregisterAll();
-
         $exception = new AggregateException("Some predictions failed:\n");
         foreach ($this->prophecies as $prophecy) {
             try {
@@ -48,10 +46,12 @@ class Prophet
             }
         }
 
+        $this->prophecies = [];
+        MockRegistry::getInstance()->unregisterAll();
+
         if (count($exception->getExceptions())) {
             throw $exception;
         }
 
-        $this->prophecies = [];
     }
 }

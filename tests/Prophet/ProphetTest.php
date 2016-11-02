@@ -6,6 +6,7 @@ use Kcs\FunctionMock\Exception\Call\NoCallsException;
 use Kcs\FunctionMock\FunctionProphecy;
 use Kcs\FunctionMock\Prophet\Prophet;
 use Kcs\FunctionMock\Registry\MockRegistry;
+use Prophecy\Exception\Prediction\PredictionException;
 
 class ProphetTest extends \PHPUnit_Framework_TestCase
 {
@@ -60,5 +61,22 @@ class ProphetTest extends \PHPUnit_Framework_TestCase
         $prophecy->addProphecy($function->reveal());
 
         $prophet->checkPredictions();
+    }
+
+    public function testCheckPredictionsShouldResetRegistryAfterChecks()
+    {
+        $prophet = new Prophet();
+
+        $prophecy = $prophet->prophesize(__CLASS__);
+        $prophecy->time()->shouldBeCalled();
+
+        try {
+            $prophet->checkPredictions();
+            $this->fail('Should throw');
+        } catch (PredictionException $e) {
+            // Do nothing
+        }
+
+        $this->assertFalse(MockRegistry::getInstance()->has(__NAMESPACE__.'\\time'), 'Registry should be empty');
     }
 }
